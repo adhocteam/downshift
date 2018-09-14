@@ -12,6 +12,17 @@ class Examples extends Component {
     this.setState({selectedColor})
   }
 
+  logKeys = (keyNotifier, e) => {
+    const key = e.which || e.keyCode
+    if (key === 13) {
+      console.log(`${keyNotifier}: Enter - ${key}`)
+    } else if (key === 32) {
+      console.log(`${keyNotifier}: Space - ${key}`)
+    } else {
+      console.log('No op')
+    }
+  }
+
   render() {
     const items = ['Black', 'Red', 'Green', 'Blue', 'Orange', 'Purple']
     return (
@@ -37,7 +48,12 @@ class Examples extends Component {
                   : 'transparent',
               }}
             />
-            <BasicAutocomplete items={items} onChange={this.changeHandler} />
+            <BasicAutocomplete
+              items={items}
+              onChange={this.changeHandler}
+              onKeyDown={this.logKeys}
+              onKeyPress={this.logKeys}
+            />
           </Div>
         </Div>
       </div>
@@ -117,7 +133,7 @@ function Root({innerRef, ...rest}) {
   return <div ref={innerRef} {...rest} />
 }
 
-function BasicAutocomplete({items, onChange}) {
+function BasicAutocomplete({items, onChange, onKeyDown, onKeyPress}) {
   return (
     <Downshift onChange={onChange}>
       {({
@@ -140,7 +156,12 @@ function BasicAutocomplete({items, onChange}) {
               'data-testid': 'basic-input',
             })}
           />
-          <button data-testid="clear-selection" onClick={clearSelection}>
+          <button
+            data-testid="clear-selection"
+            onClick={clearSelection}
+            onKeyDown={e => onKeyDown('[KEYDOWN]', e)}
+            onKeyPress={e => onKeyPress('[KEYPRESS]', e)}
+          >
             clear
           </button>
           <Menu
